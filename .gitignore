@@ -161,4 +161,4 @@ cython_debug/
 #.idea/
 
 # Secrets
-credentials.json
+client_secret.json
