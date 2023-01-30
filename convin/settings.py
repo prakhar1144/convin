@@ -25,6 +25,11 @@ SECRET_KEY = 'django-insecure-jh@()%v6z%8^w%42^r@=lb)*sc^mv=c_g5q%t1cp*vb8(m6f73
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+if DEBUG:
+    # Required to suppress 'InsecureTransportError()' during local development.
+    import os
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 ALLOWED_HOSTS = []
 
 
