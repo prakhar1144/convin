@@ -14,8 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from convinapp.views import GoogleCalendarInitView, GoogleCalendarRedirectView
+
+v1_api_urlpatterns = [
+    path('v1/calendar/init/', GoogleCalendarInitView.as_view()),
+    path('v1/calendar/redirect/', GoogleCalendarRedirectView.as_view()),
+]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('rest/', include(v1_api_urlpatterns)),
 ]
