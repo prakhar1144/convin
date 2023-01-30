@@ -1,3 +1,4 @@
+from django.conf import settings
 from helpers.fetch_events import fetch_events
 from helpers.fetch_token import fetch_token
 from helpers.initiate_authorization import initiate_authorization
@@ -7,9 +8,9 @@ from rest_framework.views import APIView
 import webbrowser
 
 data = {
-    'client_secret' : 'client_secret.json',
+    'client_secret' : settings.CLIENT_SECRET_JSON,
     'scopes' : ['https://www.googleapis.com/auth/calendar.readonly'],
-    'redirect_uri' : 'http://localhost:8080/rest/v1/calendar/redirect/'
+    'redirect_uri' : settings.REDIRECT_URI,
 }
 
 class GoogleCalendarInitView(APIView):

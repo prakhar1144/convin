@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,18 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-jh@()%v6z%8^w%42^r@=lb)*sc^mv=c_g5q%t1cp*vb8(m6f73'
+SECRET_KEY = os.getenv('SECRET_KEY', default='your secret key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'PRODUCTION' not in os.environ
 
-if DEBUG:
-    # Required to suppress 'InsecureTransportError()' during local development.
-    import os
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost']
+EXTERNAL_HOSTNAME = os.getenv('EXTERNAL_HOSTNAME')
+if EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -125,9 +123,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REDIRECT_URI = 'https://convin.pythonanywhere.com/rest/v1/calendar/redirect/'
+CLIENT_SECRET_JSON = os.path.join(BASE_DIR, 'client_secret.json')
+if DEBUG:
+    REDIRECT_URI = 'http://localhost:8080/rest/v1/calendar/redirect/'
+    # Required to suppress 'InsecureTransportError()' during local development.
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
