@@ -15,14 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from convinapp.views import GoogleCalendarInitView, GoogleCalendarRedirectView
+from convinapp.views import GoogleCalendarInitView, GoogleCalendarRedirectView, home
 
 v1_api_urlpatterns = [
-    path('v1/calendar/init/', GoogleCalendarInitView.as_view()),
+    path('v1/calendar/init/', GoogleCalendarInitView.as_view(), name='init'),
     path('v1/calendar/redirect/', GoogleCalendarRedirectView.as_view()),
 ]
 
 urlpatterns = [
+    path('', home),
     path('admin/', admin.site.urls),
     path('rest/', include(v1_api_urlpatterns)),
 ]

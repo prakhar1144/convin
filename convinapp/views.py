@@ -1,11 +1,11 @@
 from django.conf import settings
+from django.shortcuts import render
 from helpers.fetch_events import fetch_events
 from helpers.fetch_token import fetch_token
 from helpers.initiate_authorization import initiate_authorization
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-import webbrowser
 
 data = {
     'client_secret' : settings.CLIENT_SECRET_JSON,
@@ -30,19 +30,12 @@ class GoogleCalendarInitView(APIView):
                 data="Unexpected Error, check server logs.",
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-        try:
-            # for cross-client compatibilty, we use 'webbrowwer.open()'
-            # instead of redirection.
-            webbrowser.open(authorization_url, new=1, autoraise=True)
-        except:
-            # If client was unable to open browser, suggest the user
-            # to manually open it.
-            return Response(
-                data="Open this url in your browser {}".format(authorization_url),
-                status=status.HTTP_200_OK)
-        # code will never reach here.
-        return Response(status=status.HTTP_200_OK)
+        # API endpoint will return the url, now depending on the client
+        # e.g. mobile, desktop, etc. we can open the url in a 
+        # new browser tab.
+        return Response(
+            data="Configure the client to open this url in your browser {} .".format(authorization_url),
+            status=status.HTTP_200_OK)
 
 class GoogleCalendarRedirectView(APIView):
     
@@ -71,3 +64,7 @@ class GoogleCalendarRedirectView(APIView):
                 data="Failed to retrieve events list, check server logs.",
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(data=events, status=status.HTTP_200_OK)
+
+# This view is added for comfort during testing.
+def home(request):
+    return render(request, 'index.html')
